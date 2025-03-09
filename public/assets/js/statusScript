@@ -1,8 +1,26 @@
 document.addEventListener('DOMContentLoaded', async () => {
 	const { status, updated_at } = await statusFetch();
-	document.getElementById(
-		'2ndoutput'
-	).textContent = `Solana blockchain network status: ${status} - updated at: ${updated_at}`;
+	
+	// Format the date nicely
+	const formattedDate = updated_at.toLocaleString();
+	
+	// Determine status color
+	let statusColor = "#14F195"; // Default green (using Solana green)
+	if (status.toLowerCase().includes('degraded') || status.toLowerCase().includes('partial')) {
+		statusColor = "#FFB84D"; // Orange for dark theme
+	} else if (status.toLowerCase().includes('major') || status.toLowerCase().includes('critical')) {
+		statusColor = "#FF4B4B"; // Red for dark theme
+	}
+	
+	document.getElementById('2ndoutput').innerHTML = `
+		<div class="status-row">
+			<div class="status-indicator" style="background-color: ${statusColor}; color: ${statusColor};"></div>
+			<div class="status-details">
+				<div class="status-text">${status}</div>
+				<div class="status-time">Updated: ${formattedDate}</div>
+			</div>
+		</div>
+	`;
 });
 
 const statusFetch = async function () {

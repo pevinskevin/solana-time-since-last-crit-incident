@@ -69,7 +69,23 @@ function updateTimeEverySecond() {
 }
 
 function updateDOMWithTimeUnits({ days, hours, minutes, seconds }) {
-	document.getElementById(
-		'output'
-	).textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds since last critical incident.`;
+	document.getElementById('output').innerHTML = `
+		<div>
+			<span class="time-value">${days}</span>
+			<span class="time-label">days</span>
+		</div>
+		<div>
+			<span class="time-value">${hours}</span>
+			<span class="time-label">hours</span>
+		</div>
+		<div>
+			<span class="time-value">${minutes}</span>
+			<span class="time-label">minutes</span>
+		</div>
+		<div>
+			<span class="time-value">${seconds}</span>
+			<span class="time-label">seconds</span>
+		</div>
+		<div class="time-description">since last critical incident</div>
+	`;
 }

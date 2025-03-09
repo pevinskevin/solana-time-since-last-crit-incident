@@ -3,25 +3,356 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
-		/>
+		<title>Solana Status</title>
+		<style>
+			:root {
+				--solana-green: #14F195;
+				--solana-purple: #9945FF;
+				--solana-blue: #1E54FF;
+				--bg-color: #0A0E17;
+				--card-bg: #121724;
+				--text-color: #ffffff;
+				--text-secondary: #8A8F9E;
+				--border-color: #1E2636;
+				--header-height: 240px;
+			}
+			
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+				background-color: var(--bg-color);
+				color: var(--text-color);
+				line-height: 1.5;
+				min-height: 100vh;
+			}
+			
+			.header {
+				position: relative;
+				height: var(--header-height);
+				overflow: hidden;
+			}
+			
+			.header-gradient {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 100%;
+				background: linear-gradient(135deg, #0B2141, #1E54FF, #0C51C1);
+				border-radius: 0 0 10px 10px;
+				z-index: 1;
+			}
+			
+			.solana-icon-bg {
+				position: absolute;
+				right: 5%;
+				bottom: -30px;
+				width: 300px;
+				height: auto;
+				opacity: 0.15;
+				z-index: 1;
+				transform: rotate(-10deg);
+			}
+			
+			.header-content {
+				position: relative;
+				max-width: 900px;
+				margin: 0 auto;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				padding: 0 20px;
+				z-index: 2;
+			}
+			
+			.content {
+				max-width: 900px;
+				margin: 0 auto;
+				padding: 0 20px;
+				margin-top: -40px;
+				position: relative;
+				z-index: 3;
+			}
+			
+			h1 {
+				font-size: 42px;
+				font-weight: 700;
+				color: white;
+				text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+				letter-spacing: -0.5px;
+			}
+			
+			h2 {
+				font-size: 20px;
+				margin-bottom: 15px;
+				font-weight: 600;
+				color: var(--solana-green);
+			}
+			
+			.status-section {
+				margin-bottom: 30px;
+				background-color: var(--card-bg);
+				border-radius: 12px;
+				padding: 24px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+				border: 1px solid var(--border-color);
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+			
+			.status-section:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+			}
+			
+			.status-info {
+				font-size: 16px;
+				margin-bottom: 5px;
+			}
+			
+			.uptime-data {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			
+			.uptime-values {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			
+			.uptime-data span {
+				font-weight: 500;
+			}
+			
+			footer {
+				max-width: 900px;
+				margin: 0 auto;
+				margin-top: 40px;
+				color: var(--text-secondary);
+				font-size: 14px;
+				margin-bottom: 30px;
+				text-align: center;
+				padding: 20px;
+				border-top: 1px solid var(--border-color);
+			}
+			
+			/* Custom styles for status indicator */
+			.status-row {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+			
+			.status-indicator {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				box-shadow: 0 0 10px currentColor;
+			}
+			
+			.status-details {
+				flex: 1;
+			}
+			
+			.status-text {
+				font-weight: 500;
+				margin-bottom: 6px;
+			}
+			
+			.status-time {
+				font-size: 14px;
+				color: var(--text-secondary);
+			}
+			
+			/* For the uptime styling */
+			.time-value {
+				color: var(--solana-green);
+				font-size: 26px;
+				font-weight: 600;
+			}
+			
+			.time-label {
+				color: var(--text-secondary);
+				margin-left: 6px;
+			}
+			
+			.time-description {
+				color: var(--text-secondary);
+				font-style: italic;
+				margin-top: 12px;
+				border-top: 1px solid var(--border-color);
+				padding-top: 12px;
+				position: relative;
+				cursor: help;
+			}
+			
+			/* Loading indicator styles */
+			.loading {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 20px;
+			}
+			
+			.loading-spinner {
+				width: 24px;
+				height: 24px;
+				border: 3px solid rgba(20, 241, 149, 0.3);
+				border-radius: 50%;
+				border-top-color: var(--solana-green);
+				animation: spin 1s linear infinite;
+				margin-right: 10px;
+			}
+			
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+			
+			/* Tooltip styles */
+			.time-description::after {
+				content: "A critical incident occurs when Solana block production has completely ceased.";
+				position: absolute;
+				top: -10px;
+				left: 50%;
+				transform: translateX(-50%) translateY(-100%);
+				width: 250px;
+				background-color: #293249;
+				color: white;
+				text-align: center;
+				padding: 10px;
+				border-radius: 6px;
+				font-style: normal;
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s, visibility 0.3s;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+				border: 1px solid var(--border-color);
+				font-size: 13px;
+				font-weight: normal;
+				line-height: 1.4;
+				pointer-events: none;
+				z-index: 10;
+			}
+			
+			.time-description:hover::after {
+				opacity: 1;
+				visibility: visible;
+			}
+			
+			/* Add triangle pointer to tooltip */
+			.time-description::before {
+				content: "";
+				position: absolute;
+				top: -10px;
+				left: 50%;
+				transform: translateX(-50%) translateY(-100%);
+				border-width: 8px;
+				border-style: solid;
+				border-color: #293249 transparent transparent transparent;
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s, visibility 0.3s;
+				z-index: 11;
+			}
+			
+			.time-description:hover::before {
+				opacity: 1;
+				visibility: visible;
+			}
+			
+			.error {
+				color: #FF4B4B;
+				text-align: center;
+				padding: 10px;
+				font-style: italic;
+			}
+		</style>
 	</head>
 	<body>
-		<div id="output"></div>
-		<div id="2ndoutput"></div>
+		<div class="header">
+			<div class="header-gradient"></div>
+			<img src="/assets/img/solana-sol-logo.png" alt="Solana Logo" class="solana-icon-bg">
+			<div class="header-content">
+				<h1>Solana Status</h1>
+			</div>
+		</div>
+		
+		<div class="content">
+			<div class="status-section">
+				<h2>Network Status</h2>
+				<div id="2ndoutput" class="status-info">
+					<div class="loading">
+						<div class="loading-spinner"></div>
+						<span>Loading status...</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="status-section">
+				<h2>Uptime</h2>
+				<div class="uptime-data">
+					<div id="output" class="uptime-values">
+						<div class="loading">
+							<div class="loading-spinner"></div>
+							<span>Loading uptime data...</span>
+						</div>
+					</div>
+					<div class="time-description">since last critical incident</div>
+				</div>
+			</div>
+		</div>
+		
+		<footer>
+			<p>Data provided by Solana Status API</p>
+		</footer>
 
 		<script src="/assets/js/statusScript"></script>
 		<script src="/assets/js/incidentScript.js"></script>
-
-		<!-- <script>
-			async function apiFetch() {
-				const promise = await fetch('http://localhost:8080/api');
-				const result = await promise.json().data;
-				const timeData = result.data;
+		
+		<script>
+			// Override the updateDOMWithTimeUnits function to prevent tooltip flickering
+			function updateDOMWithTimeUnits({ days, hours, minutes, seconds }) {
+				document.getElementById('output').innerHTML = `
+					<div>
+						<span class="time-value">${days}</span>
+						<span class="time-label">days</span>
+					</div>
+					<div>
+						<span class="time-value">${hours}</span>
+						<span class="time-label">hours</span>
+					</div>
+					<div>
+						<span class="time-value">${minutes}</span>
+						<span class="time-label">minutes</span>
+					</div>
+					<div>
+						<span class="time-value">${seconds}</span>
+						<span class="time-label">seconds</span>
+					</div>
+				`;
 			}
-		</script> -->
+
+			// Add timeout to show error message if data doesn't load within 10 seconds
+			setTimeout(() => {
+				const outputEl = document.getElementById('output');
+				const statusEl = document.getElementById('2ndoutput');
+				
+				if (outputEl.querySelector('.loading')) {
+					outputEl.innerHTML = `<div class="error">Unable to load uptime data. Please refresh the page to try again.</div>`;
+				}
+				
+				if (statusEl.querySelector('.loading')) {
+					statusEl.innerHTML = `<div class="error">Unable to load status data. Please refresh the page to try again.</div>`;
+				}
+			}, 10000);
+		</script>
 	</body>
 </html>
