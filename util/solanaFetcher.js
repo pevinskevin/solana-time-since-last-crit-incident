@@ -1,6 +1,6 @@
-import { funcMsSinceLastCritIncident } from './util/timeConverter.js';
+import { funcMsSinceLastCritIncident } from './timeConverter.js';
 
-const fetchIncident = async function () {
+export const fetchIncident = async function () {
 	const promise = await fetch(
 		'https://status.solana.com/api/v2/incidents.json'
 	);

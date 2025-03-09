@@ -6,10 +6,12 @@
 		<title>Document</title>
 	</head>
 	<body>
-	
-
-	<script src="/public/assets/js/script.js">
-		
-	</script>
+		<script>
+			async function apiFetch() {
+				const promise = await fetch('http://localhost:8080/api');
+				const data = await promise.json();
+				console.log(...data);
+			}
+		</script>
 	</body>
 </html>
