@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 const statusFetch = async function () {
 	const promise = await fetch('https://status.solana.com/api/v2/status.json');
 	const response = await promise.json();
-	const unparsedDate = response.page.updated_at;
-	const parsedDate = new Date(unparsedDate);
+	// Parses date string code thing from 'updated_at' into the browsers local time.
+	const parsedDate = new Date(response.page.updated_at);
 	const statusData = {
 		updated_at: parsedDate,
 		status: response.status.description,
