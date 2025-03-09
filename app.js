@@ -4,6 +4,8 @@ import path from 'path';
 
 app.use(express.static('public'));
 
+import { fetchIncident } from './util/solanaFetcher.js';
+
 
 app.get('/', async (req, res) => {
 	res.sendFile(path.resolve('./public/frontpage/index.html'))
