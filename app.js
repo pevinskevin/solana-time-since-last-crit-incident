@@ -7,14 +7,15 @@ import path from 'path';
 import { funcMsSinceLastCritIncident } from './util/timeConverter.js';
 
 app.get('/', async (req, res) => {
-	res.send({ data: fetchIncident() });
+	const obj = fetchIncident();
+	res.send({ data: obj });
 });
 
 app.listen(8080, () => {
 	console.log('Server is running.');
 });
 
-async function fetchIncident() {
+const fetchIncident = async function () {
 	const promise = await fetch(
 		'https://status.solana.com/api/v2/incidents.json'
 	);
@@ -34,4 +35,4 @@ async function fetchIncident() {
 		criticalIncidentsArray[0].resolved_at
 	);
 	return timeSinceLastCritIncident;
-}
+};
