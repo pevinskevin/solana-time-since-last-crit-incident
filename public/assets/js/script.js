@@ -1,3 +1,5 @@
+'use strict';
+
 let timeSinceIncident;
 let timeUnits = {};
 
@@ -61,12 +63,12 @@ const funcMsToDaysHoursMinutesSeconds = function (ms) {
 
 function updateTimeEverySecond() {
 	timeSinceIncident += 1000;
-	timeUnits = funcMsSinceLastCritIncident(timeSinceIncident);
+	timeUnits = funcMsToDaysHoursMinutesSeconds(timeSinceIncident);
 	updateDOMWithTimeUnits(timeUnits);
 }
 
 function updateDOMWithTimeUnits({ days, hours, minutes, seconds }) {
 	document.getElementById(
 		'output'
-	).textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+	).textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds since last critical incident.`;
 }
