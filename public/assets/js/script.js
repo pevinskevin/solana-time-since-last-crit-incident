@@ -1,5 +1,11 @@
-document.addEventListener('DOMContentLoaded', () => {
-	let time = timeSinceLastCritIncident();
+let timeSinceIncident;
+let timeUnits = {};
+
+document.addEventListener('DOMContentLoaded', async () => {
+	timeSinceIncident = await timeSinceLastCritIncident();
+	timeUnits = funcMsToDaysHoursMinutesSeconds(timeSinceIncident);
+	updateDOMWithTimeUnits(timeUnits);
+	setInterval(updateTimeEverySecond, 1000);
 });
 
 const timeSinceLastCritIncident = async function () {
@@ -52,3 +58,15 @@ const funcMsToDaysHoursMinutesSeconds = function (ms) {
 
 	return { days, hours, minutes, seconds };
 };
+
+function updateTimeEverySecond() {
+	timeSinceIncident += 1000;
+	timeUnits = funcMsSinceLastCritIncident(timeSinceIncident);
+	updateDOMWithTimeUnits(timeUnits);
+}
+
+function updateDOMWithTimeUnits({ days, hours, minutes, seconds }) {
+	document.getElementById(
+		'output'
+	).textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+}
