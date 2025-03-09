@@ -1,0 +1,20 @@
+document.addEventListener('DOMContentLoaded', async () => {
+	const { status, updated_at } = await statusFetch();
+	document.getElementById(
+		'2ndoutput'
+	).textContent = `Solana blockchain network status: ${status} - updated at: ${updated_at}`;
+});
+
+const statusFetch = async function () {
+	const promise = await fetch('https://status.solana.com/api/v2/status.json');
+	const response = await promise.json();
+	const unparsedDate = response.page.updated_at;
+	const parsedDate = new Date(unparsedDate);
+	const statusData = {
+		updated_at: parsedDate,
+		status: response.status.description,
+	};
+	console.log(statusData);
+
+	return statusData;
+};

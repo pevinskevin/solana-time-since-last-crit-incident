@@ -61,6 +61,7 @@ const funcMsToDaysHoursMinutesSeconds = function (ms) {
 	return { days, hours, minutes, seconds };
 };
 
+// Increments time for each passing second, rather than doing redundant API calls.
 function updateTimeEverySecond() {
 	timeSinceIncident += 1000;
 	timeUnits = funcMsToDaysHoursMinutesSeconds(timeSinceIncident);
